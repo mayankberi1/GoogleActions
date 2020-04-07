@@ -25,9 +25,14 @@ class ExpectedInput(dict):
                  possible_intents_list: List[ExpectedIntent] = None):
         super().__init__()
 
-        self['speechBiasingHints'] = speech_biasing_hints_list
-        self['inputPrompt'] = input_prompt
-        self['possibleIntents'] = possible_intents_list
+        if speech_biasing_hints_list is not None:
+            self['speechBiasingHints'] = speech_biasing_hints_list
+
+        if input_prompt is not None:
+            self['inputPrompt'] = input_prompt
+
+        if possible_intents_list is not None:
+            self['possibleIntents'] = possible_intents_list
 
     def add_speech_biasing_hint(self, speech_biasing_hints: str) -> List[str]:
         for item in speech_biasing_hints:

@@ -4,6 +4,7 @@ from .AndroidApp import AndroidApp
 from .Extension import Extension
 from .OpenUrlAction import OpenUrlAction
 from .VersionsFilter import VersionsFilter
+from typing import List
 
 
 class ExpectedIntent(dict):
@@ -25,6 +26,30 @@ class ExpectedIntent(dict):
 
         if parameter_name is not None:
             self['parameterName'] = parameter_name
+
+    @property
+    def intent(self):
+        return self.get('intent')
+
+    @intent.setter
+    def intent(self, intent: str):
+        self['intent'] = intent
+
+    @property
+    def parameter_name(self):
+        return self.get('parameterName')
+
+    @parameter_name.setter
+    def parameter_name(self, parameter_name):
+        self['parameterName'] = parameter_name
+
+    @property
+    def input_value(self):
+        return self.get('inputValueData')
+
+    @input_value.setter
+    def input_value(self, input_value_data):
+        self['inputValueData'] = input_value_data
 
     def add_input_values(self, input_type: str, **fields) -> Extension:
         self['inputValueData'] = Extension(extension_type=input_type, **fields)
@@ -108,11 +133,14 @@ class ExpectedIntent(dict):
         # self['inputValueData']['dialogSpec'] =
         return self
 
-    def request_permission(self, opt_context_text: str = '', permissions: Permission = None):
+    def request_permission(self, opt_context_text: str = '', permissions: List[Permission] = None):
         """
         Obtain the user's full name, coarse location, or precise location, or all 3.
         :return: bool
         """
+
+        if permissions is None:
+            permissions = []
 
         self['intent'] = 'actions.intent.PERMISSION'
         self['inputValueData'] = Extension('type.googleapis.com/google.actions.v2.PermissionValueSpec')
@@ -135,11 +163,6 @@ class ExpectedIntent(dict):
         self['intent'] = 'actions.intent.SIGN_IN'
         self['inputValueData'] = Extension('type.googleapis.com/google.actions.v2.SignInValueSpec')
         self['inputValueData']['optContext'] = opt_context_text
-        return self
-
-    def request_user_text(self):
-        self['intent'] = 'actions.intent.TEXT'
-        # self['inputValueData']['dialogSpec'] =
         return self
 
     def request_new_surface(self):
